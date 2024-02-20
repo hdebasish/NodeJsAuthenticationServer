@@ -173,7 +173,7 @@ export default class UserController {
         { expiresIn: "5m" }
       );
 
-      const link = `https://nodejs-auth-api-zihk.onrender.com/resetpassword.html?token=${token}`;
+      const link = `http://localhost:5501/resetpassword.html?token=${token}`;
 
       const transporter = nodemailer.createTransport({
         service: "gmail",
