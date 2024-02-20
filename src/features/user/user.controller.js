@@ -173,7 +173,7 @@ export default class UserController {
         { expiresIn: "5m" }
       );
 
-      const link = `http://localhost:5501/resetpassword.html?token=${token}`;
+      const link = `https://master--cool-brigadeiros-ff2859.netlify.app/resetpassword.html?token=${token}`;
 
       const transporter = nodemailer.createTransport({
         service: "gmail",
