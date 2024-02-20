@@ -22,7 +22,7 @@ export default class UserController {
         }
       }
 
-      console.log(name, email, password);
+      name, email, password;
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -31,25 +31,24 @@ export default class UserController {
       const result = await this.userRepository.add(user);
 
       if (result) {
-         res.status(201).send("User Registered Successfully");
+        res.status(201).send("User Registered Successfully");
 
-         const transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
             user: "codingninjas2k16@gmail.com",
             pass: "slwvvlczduktvhdj",
           },
         });
-  
+
         const mailOptions = {
           from: "codingninjas2k16@gmail.com",
           to: email,
-          subject: "Welcome "+ name +"! Your account has been created.",
-          text: `Hello ${name}, \n\nYour account has been successfully created.`
+          subject: "Welcome " + name + "! Your account has been created.",
+          text: `Hello ${name}, \n\nYour account has been successfully created.`,
         };
 
-         await transporter.sendMail(mailOptions);
-
+        await transporter.sendMail(mailOptions);
       } else {
         return res.status(400).send("Error Registering User");
       }
@@ -104,7 +103,7 @@ export default class UserController {
       });
       const payload = ticket.getPayload();
 
-      console.log(payload);
+      payload;
 
       const name = payload.name;
       const email = payload.email;
@@ -163,7 +162,9 @@ export default class UserController {
       }
 
       if (!user.password) {
-        return res.status(400).send("Can't reset your password. Please continue with google.");
+        return res
+          .status(400)
+          .send("Can't reset your password. Please continue with google.");
       }
 
       const token = jsonwebtoken.sign(
@@ -191,61 +192,59 @@ export default class UserController {
 
       const result = await transporter.sendMail(mailOptions);
 
-      if(result){
-        return res.status(200).send("A password reset link has been sent to your registered Email ID.");
+      if (result) {
+        return res
+          .status(200)
+          .send(
+            "A password reset link has been sent to your registered Email ID."
+          );
       }
 
       if (!user.password) {
-        return res.status(400).send("Can't reset your password. Please continue with google.");
+        return res
+          .status(400)
+          .send("Can't reset your password. Please continue with google.");
       }
-
-
-
     } catch (error) {
       next(error);
     }
   }
 
-
-  async resetPassword(req, res, next){
+  async resetPassword(req, res, next) {
     try {
-
       const token = req.body.token;
-      const password =  req.body.password;
+      const password = req.body.password;
 
-      const payload = jsonwebtoken.verify(token,process.env.JWT_SECRET_MAIL);
-      
+      const payload = jsonwebtoken.verify(token, process.env.JWT_SECRET_MAIL);
+
       const id = payload.userID;
 
       const user = await this.userRepository.findUserById(id);
 
-      if(!user){
+      if (!user) {
         return res.status(404).send("User Not Found");
-      };
+      }
 
       const verifiedUser = await bcrypt.compare(password, user.password);
 
-      if(verifiedUser){
+      if (verifiedUser) {
         return res.status(400).send("Please provide a new password");
       }
 
-
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const  updatedUser = await this.userRepository.updateUserPassword(id, hashedPassword);
+      const updatedUser = await this.userRepository.updateUserPassword(
+        id,
+        hashedPassword
+      );
 
-      if(updatedUser){
+      if (updatedUser) {
         return res.status(201).send("Password updated successfully");
       }
 
       return res.status(400).send("Failed to update password");
-
-      
     } catch (error) {
       next(error);
     }
   }
-  
-  
-  
 }
