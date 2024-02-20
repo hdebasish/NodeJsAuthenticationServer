@@ -21,6 +21,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to the Node JS Authentication API!");
+});
+
 // routes to user
 app.use("/api/users", userRouter);
 
