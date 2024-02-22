@@ -268,6 +268,12 @@ export default class UserController {
 
       const { oldPassword, newPassword, cnfPassword } = req.body;
 
+      const verifiedUser = await bcrypt.compare(oldPassword, user.password);
+
+      if(!verifiedUser){
+        return res.status(401).send('Wrong current password');
+      }
+
       if (newPassword !== cnfPassword) {
         return res
           .status(400)
@@ -278,14 +284,6 @@ export default class UserController {
         return res
           .status(400)
           .send("New password and Old Password value can't be same");
-      }
-
-      const verifiedUser = await bcrypt.compare(newPassword, user.password);
-
-      if (verifiedUser) {
-        return res
-          .status(400)
-          .send("New password must be different from Old Password");
       }
 
       const hashedPassword = await bcrypt.hash(cnfPassword, 10);
