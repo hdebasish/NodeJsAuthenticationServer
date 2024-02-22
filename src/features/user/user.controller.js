@@ -286,6 +286,13 @@ export default class UserController {
           .send("New password and Old Password value can't be same");
       }
 
+      const samePassword = await bcrypt.compare(newPassword, user.password);
+
+      if(samePassword) {
+        return res.status(400).send("New password cannot be the same as previous one");
+      }
+
+
       const hashedPassword = await bcrypt.hash(cnfPassword, 10);
 
       const updatedUser = await this.userRepository.updateUserPassword(
