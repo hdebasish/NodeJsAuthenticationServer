@@ -1,6 +1,7 @@
 import express from "express";
 import UserController from "./user.controller.js";
 import Validator from "../../middleware/validator.middleware.js";
+import jwtAuth from "../../middleware/jwt.middleware.js";
 
 const userRouter = express.Router();
 
@@ -32,8 +33,16 @@ userRouter.post("/sendverificationemail", (req, res, next) => {
   userController.sendVerificationEmail(req, res, next);
 });
 
+// resets password after verifying the email id using token
+
 userRouter.post("/resetpassword", Validator.resetPasswordRules(), Validator.validate, (req, res, next) => {
   userController.resetPassword(req, res, next);
+});
+
+// change password for a logged in user
+
+userRouter.post("/changepassword", jwtAuth , Validator.resetPasswordRules(), Validator.validate, (req, res, next) => {
+  userController.changePassword(req, res, next);
 });
 
 export default userRouter;

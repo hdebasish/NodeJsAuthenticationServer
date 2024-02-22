@@ -23,6 +23,14 @@ export default class Validator {
     ];
   }
 
+  static resetPasswordRules() {
+    return [
+      body("oldPassword").notEmpty().withMessage("Old Password cannot be empty").isLength( { min:8, max:20 } ).withMessage("Old Password must be between 8 and 20 characters"),
+      body("newPassword").notEmpty().withMessage("New Password cannot be empty").isLength( { min:8, max:20 } ).withMessage("New Password must be between 8 and 20 characters"),
+      body("cnfPassword").notEmpty().withMessage("Confirm Password cannot be empty").isLength( { min:8, max:20 } ).withMessage("Confirm Password must be between 8 and 20 characters")
+    ];
+  }
+
   static validate(req, res, next) {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

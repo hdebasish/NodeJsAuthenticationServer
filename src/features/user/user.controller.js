@@ -247,4 +247,59 @@ export default class UserController {
       next(error);
     }
   }
+
+  async changePassword(req, res, next) {
+    try {
+      const userId = req.userId;
+
+      const user = await this.userRepository.findUserById(userId);
+
+      if (!user) {
+        return res
+          .status(404)
+          .send("User not found, please register to continue");
+      }
+
+      if (!user.password) {
+        return res
+          .status(400)
+          .send("Can't reset your password. Please continue with google.");
+      }
+
+      const { oldPassword, newPassword, cnfPassword } = req.body;
+
+      if (newPassword !== cnfPassword) {
+        return res
+          .status(400)
+          .send("New Password and Confirmation Password do not match");
+      }
+
+      if (newPassword === oldPassword) {
+        return res
+          .status(400)
+          .send("New password and Old Password value can't be same");
+      }
+
+      const verifiedUser = await bcrypt.compare(newPassword, user.password);
+
+      if (verifiedUser) {
+        return res
+          .status(400)
+          .send("New password must be different from Old Password");
+      }
+
+      const hashedPassword = await bcrypt.hash(cnfPassword, 10);
+
+      const updatedUser = await this.userRepository.updateUserPassword(
+        userId,
+        hashedPassword
+      );
+
+      if (updatedUser) {
+        return res.status(201).send("Password updated successfully");
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }
