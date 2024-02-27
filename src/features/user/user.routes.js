@@ -35,7 +35,7 @@ userRouter.post("/sendverificationemail", (req, res, next) => {
 
 // resets password after verifying the email id using token
 
-userRouter.post("/resetpassword", Validator.resetPasswordRules(), Validator.validate, (req, res, next) => {
+userRouter.post("/resetpassword", Validator.resetPasswordEmailRules(), Validator.validate, (req, res, next) => {
   userController.resetPassword(req, res, next);
 });
 

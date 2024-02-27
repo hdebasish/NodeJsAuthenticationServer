@@ -16,7 +16,7 @@ export default class Validator {
     ];
   }
 
-  static resetPasswordRules() {
+  static resetPasswordEmailRules() {
     return [
       body("token").notEmpty().withMessage("token cannot be empty"),
       body("password").notEmpty().withMessage("Password cannot be empty").isLength( { min:8, max:20 } ).withMessage("Password must be between 8 and 20 characters")
